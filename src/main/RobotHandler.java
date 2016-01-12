@@ -31,13 +31,9 @@ public class RobotHandler extends JFrame {
 		setVisible( true );
 		
 		map = new Map();
-		
 	}
 	
 	public static void main(String[] args) throws Exception	{
-		int motion;
-		int distance;
-		
 		monitor = new RobotHandler();
 		
 		monitor.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -52,11 +48,38 @@ public class RobotHandler extends JFrame {
 		inputStream = socket.getInputStream();
 		dataInputStream = new DataInputStream(inputStream);
 		
-		while(true){
-			motion = dataInputStream.readInt();
-			distance = (int)(dataInputStream.readFloat()*100);
-			System.out.println(motion + " " + distance );
-			monitor.repaint();
+		int index = 0;
+		while(true) {
+			int value = dataInputStream.readInt();
+			if (value == -1) {
+				if (index == 0) {
+					readMap: while(true) {
+						value = dataInputStream.readInt();
+						switch (value) {
+							case -1:
+								break readMap;
+							case 0:
+								map.gridValues[index] = ObjectType.UKNOWN;
+								break;
+							case 1:
+								map.gridValues[index] = ObjectType.EXPLORED;
+								break;
+							case 2:
+								map.gridValues[index] = ObjectType.OBSTACLE;
+								break;
+							case 3:
+								map.gridValues[index] = ObjectType.STATION;
+								break;
+							case 4:
+								map.gridValues[index] = ObjectType.TARGET;
+								break;
+						}
+						index++;
+					}
+					index = 0;
+					monitor.repaint();
+				}
+			}
 		}
 	}
 	

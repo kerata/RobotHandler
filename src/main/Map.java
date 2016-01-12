@@ -16,7 +16,7 @@ public class Map {
 	static float lineWidth = 1;
 	
 	public enum ObjectType {
-		EMPTY, OBSTACLE, STATION, TARGET, EXPLORED, AGENT;
+		UKNOWN, OBSTACLE, STATION, TARGET, EXPLORED, AGENT;
 		
 		public static Color getColor(ObjectType type) {
 			switch (type) {
@@ -39,7 +39,7 @@ public class Map {
 	public Map() {
 		for (int r = 0;r < 6;r++)
 			for (int c = 0;c < 6;c++) {
-				ObjectType grid = r == 5 ? ObjectType.EXPLORED : ObjectType.EMPTY;
+				ObjectType grid = r == 5 ? ObjectType.EXPLORED : ObjectType.UKNOWN;
 				gridValues[r * 6 + c] = grid;
 			}
 		
