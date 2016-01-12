@@ -43,7 +43,15 @@ public class Map {
 				gridValues[r * 6 + c] = grid;
 			}
 		
-		agent = new Point((int)(gridWidth * 3.5 + 3 * lineWidth),
+		agent = new Point((int)(gridWidth * 2.5 + 2 * lineWidth),
 				(int)(gridWidth * 5.5 + 5 * lineWidth));
+	}
+	
+	public void setAgentLocation(int location) {
+		int c = location % 6;
+		int r = location / 6;
+		
+		agent = new Point((int)(gridWidth * (c + .5) + c * lineWidth),
+				(int)(gridWidth * (r + .5) + r * lineWidth));
 	}
 }

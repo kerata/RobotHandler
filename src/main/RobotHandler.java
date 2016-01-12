@@ -32,17 +32,25 @@ public class RobotHandler extends JFrame {
 		
 		map = new Map();
 	}
-	
+
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception	{
 		monitor = new RobotHandler();
 		
-		monitor.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		monitor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		monitor.setResizable(false);
 		
 		String ip = "10.0.1.1";
 		
-		@SuppressWarnings("resource")
-		Socket socket = new Socket(ip, 1029);
+		Socket socket;
+		while (true) {
+			try {
+				socket = new Socket(ip, 1029);
+				break;
+			} catch (Exception e) {
+				
+			}
+		}
 		System.out.println("Connected!");
 		
 		inputStream = socket.getInputStream();
@@ -50,35 +58,57 @@ public class RobotHandler extends JFrame {
 		
 		int index = 0;
 		while(true) {
-			int value = dataInputStream.readInt();
-			if (value == -1) {
-				if (index == 0) {
-					readMap: while(true) {
+			try {
+				int value = dataInputStream.readInt();
+				System.out.println("reading" + value);
+				if (value == -1) {
+					if (index == 0) {
+						readMap: while(true) {
+							value = dataInputStream.readInt();
+							System.out.println("reading" + value);
+							switch (value) {
+								case -1:
+									break readMap;
+								case 0:
+									map.gridValues[index] = ObjectType.UKNOWN;
+									break;
+								case 1:
+									map.gridValues[index] = ObjectType.EXPLORED;
+									break;
+								case 2:
+									map.gridValues[index] = ObjectType.OBSTACLE;
+									break;
+								case 3:
+									map.gridValues[index] = ObjectType.STATION;
+									break;
+								case 4:
+									map.gridValues[index] = ObjectType.TARGET;
+									break;
+							}
+							index++;
+						}
+						index = 0;
+						System.out.println("repaint map");
+						monitor.repaint();
+					}
+				}
+				else if (value == -2) {
+					readAgent: while(true) {
 						value = dataInputStream.readInt();
+						System.out.println("reading" + value);
 						switch (value) {
-							case -1:
-								break readMap;
-							case 0:
-								map.gridValues[index] = ObjectType.UKNOWN;
-								break;
-							case 1:
-								map.gridValues[index] = ObjectType.EXPLORED;
-								break;
-							case 2:
-								map.gridValues[index] = ObjectType.OBSTACLE;
-								break;
-							case 3:
-								map.gridValues[index] = ObjectType.STATION;
-								break;
-							case 4:
-								map.gridValues[index] = ObjectType.TARGET;
+							case -2:
+								break readAgent;
+							default:
+								map.setAgentLocation(value);
 								break;
 						}
-						index++;
 					}
-					index = 0;
+					System.out.println("repaint agent");
 					monitor.repaint();
 				}
+			} catch (Exception e) {
+				
 			}
 		}
 	}
