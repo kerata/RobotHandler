@@ -93,13 +93,21 @@ public class RobotHandler extends JFrame {
 					}
 				}
 				else if (value == -2) {
+					int agentLocation = 0;
 					readAgent: while(true) {
 						value = dataInputStream.readInt();
 						System.out.println("reading" + value);
 						switch (value) {
 							case -2:
 								break readAgent;
+							case -1:
+								break;
+							case 1:
+								map.gridValues[agentLocation] = ObjectType.TARGET;
+							case 7:
+								map.gridValues[agentLocation] = ObjectType.STATION;
 							default:
+								agentLocation = value;
 								map.setAgentLocation(value);
 								break;
 						}

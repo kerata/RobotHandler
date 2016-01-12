@@ -23,9 +23,9 @@ public class Map {
 				case OBSTACLE:
 					return Color.BLACK;
 				case STATION:
-					return Color.GREEN;
-				case TARGET:
 					return Color.RED;
+				case TARGET:
+					return Color.GREEN;
 				case EXPLORED:
 					return Color.YELLOW;
 				case AGENT:
